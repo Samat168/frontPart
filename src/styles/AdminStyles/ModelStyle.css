@@ -1,0 +1,80 @@
+/* Основной контейнер для карточек */
+.models-div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Карточка машины */
+.models-div__card {
+  width: 340px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.models-div__card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Изображение машины */
+.models-div__card__img img {
+  width: 100%;
+  height: 267px;
+  object-fit: cover;
+}
+
+/* Контент карточки */
+.models-div__card__content {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Заголовок */
+.models-div__card__content h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* Цена */
+.models-div__card__price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
+  font-size: 16px;
+}
+
+/* Детали */
+.models-div__card__details {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Кнопка бронирования */
+.models-div__card__btn {
+  background: #ff7d00;
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: auto;
+  transition: background 0.3s ease;
+}
+
+.models-div__card__btn:hover {
+  background: #ff5700;
+}

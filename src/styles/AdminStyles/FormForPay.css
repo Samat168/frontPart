@@ -1,0 +1,16 @@
+input:hover {
+  border: none;
+}
+.block {
+  width: 70%;
+  margin-left: 20%;
+  margin-top: 5%;
+}
+
+@media all and (max-width: 400px) {
+  .block {
+    width: 100%;
+    margin-left: 0%;
+    padding-left: 7%;
+  }
+}

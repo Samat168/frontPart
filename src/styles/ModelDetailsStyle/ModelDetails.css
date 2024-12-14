@@ -1,0 +1,103 @@
+/* Основной контейнер для детального обзора */
+.car-detail {
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Заголовок и изображение */
+.car-detail__header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.car-detail__header h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.car-detail__header img {
+  width: 100%; /* Максимальная ширина 100% от родительского контейнера */
+  max-width: 600px; /* Уменьшено до 600px */
+  height: auto; /* Пропорциональная высота */
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 auto; /* Центрирование для эстетики */
+}
+
+/* Информация о машине */
+.car-detail__info {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.car-detail__info h3 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.car-detail__info p {
+  font-size: 16px;
+  margin: 5px 0;
+  color: #555;
+}
+
+/* Кнопки */
+.car-detail__buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.car-detail__buttons a {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.car-detail__buttons .back-button {
+  background: #ccc;
+  color: #333;
+}
+
+.car-detail__buttons .back-button:hover {
+  background: #b0b0b0;
+}
+
+.car-detail__buttons .book-button {
+  background: #ff7d00;
+  color: #fff;
+}
+
+.car-detail__buttons .book-button:hover {
+  background: #ff5700;
+}
+
+/* Блок выбора дат */
+.car-detail__dates {
+  margin: 20px 0;
+}
+
+.car-detail__dates div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.car-detail__dates .MuiTextField-root {
+  width: 45%;
+}

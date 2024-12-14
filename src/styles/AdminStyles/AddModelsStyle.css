@@ -1,0 +1,112 @@
+.add_product {
+  max-width: 600px; /* Уменьшен для более компактного вида */
+  margin: 40px auto; /* Отступы сверху и снизу */
+  padding: 30px;
+  background: #ffffff; /* Чистый белый фон */
+  border-radius: 12px; /* Более плавные углы */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Увеличена тень для контраста */
+  text-align: center;
+  font-family: "Arial", sans-serif;
+}
+
+.add_product h2 {
+  margin-bottom: 25px;
+  font-size: 32px; /* Увеличенный заголовок */
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.add_product_input {
+  width: calc(100% - 30px); /* Уменьшение ширины для симметрии с паддингом */
+  margin: 10px auto; /* Равные вертикальные отступы */
+  padding: 12px 15px;
+  border: 1px solid #dcdcdc; /* Светло-серый цвет границы */
+  border-radius: 8px; /* Плавные углы */
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: #f7f7f7; /* Мягкий фон для контраста */
+}
+
+.add_product_input:focus {
+  border-color: #4a90e2; /* Акцент на синем */
+  background: #ffffff;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.4); /* Тень при фокусе */
+  outline: none;
+}
+
+.add_product_button {
+  display: inline-block;
+  background: #4a90e2; /* Более приятный синий */
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.add_product_button:hover {
+  background: #357ab8;
+  transform: scale(1.05); /* Легкое увеличение */
+}
+
+.add_product select {
+  width: calc(100% - 30px); /* Уменьшено для симметрии с полями */
+  margin: 10px auto;
+  padding: 12px 15px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #f7f7f7;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  appearance: none; /* Убирает стандартный стиль стрелки браузера */
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, #4a90e2 50%),
+    linear-gradient(135deg, #4a90e2 50%, transparent 50%);
+  background-position: calc(100% - 15px) calc(1.6em),
+    calc(100% - 10px) calc(1.6em);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.add_product select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.4);
+  outline: none;
+  background-image: linear-gradient(45deg, transparent 50%, #357ab8 50%),
+    linear-gradient(135deg, #357ab8 50%, transparent 50%);
+}
+
+.add_product select option {
+  background: #ffffff; /* Белый фон для всех опций */
+  color: #333;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+  .add_product {
+    max-width: 90%; /* Уменьшаем ширину для мобильных */
+    padding: 20px;
+  }
+
+  .add_product h2 {
+    font-size: 24px;
+  }
+
+  .add_product_input,
+  .add_product select {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .add_product_button {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+}
