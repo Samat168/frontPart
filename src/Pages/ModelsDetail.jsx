@@ -24,7 +24,7 @@ function ModelsDetail() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const { users, getUser } = useAuth();
-
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [comments, setComments] = useState([]); // Список комментариев
   const [newComment, setNewComment] = useState(""); // Новый комментарий
 
@@ -113,6 +113,38 @@ function ModelsDetail() {
     return <div>Ошибка: {error}</div>;
   }
 
+  const handleBooking = async () => {
+    const bookingData = {
+      carId: car.id,
+      startDate: startDate,
+      endDate: endDate,
+      userId: users.id, // Подставьте ID текущего пользователя
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/bookings/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Не удалось забронировать автомобиль.");
+      }
+
+      alert("Автомобиль успешно забронирован!");
+      setShowPaymentForm(true); // Показываем форму оплаты
+    } catch (error) {
+      console.error("Ошибка при бронировании:", error.message);
+      alert("Произошла ошибка при бронировании.");
+    }
+  };
+
   return (
     <div>
       <HeroPages name="Детальный обзор" />
@@ -160,7 +192,8 @@ function ModelsDetail() {
           <Button
             to="#"
             className="book-button"
-            onClick={() => alert("Бронирование пока не реализовано")}
+            onClick={handleBooking}
+            disabled={showPaymentForm}
           >
             Забронировать поездку
           </Button>
