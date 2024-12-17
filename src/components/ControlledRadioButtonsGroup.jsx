@@ -1,45 +1,56 @@
 import * as React from "react";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
+import { TextField, Button, FormControl, FormLabel } from "@mui/material";
 
-export default function ControlledRadioButtonsGroup() {
-  const [value, setValue] = React.useState("female");
+export default function DateRangeFilter() {
+  const [startDate, setStartDate] = React.useState("");
+  const [endDate, setEndDate] = React.useState("");
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
+  const handleApplyFilter = () => {
+    if (startDate && endDate) {
+      console.log("Фильтр по датам:", { startDate, endDate });
+      // Здесь можно вызвать функцию фильтрации, например:
+      // filterByDateRange(startDate, endDate);
+    } else {
+      alert("Пожалуйста, выберите обе даты.");
+    }
   };
 
   return (
     <FormControl>
       <FormLabel
-        id="demo-controlled-radio-buttons-group"
-        sx={{ fontSize: "18px", fontWeight: "700" }}
+        sx={{ fontSize: "18px", fontWeight: "700", marginBottom: "16px" }}
       >
-        Сортировка по цене
+        Сортировка по диапазону дат
       </FormLabel>
-      <RadioGroup
-        aria-labelledby="demo-controlled-radio-buttons-group"
-        name="controlled-radio-buttons-group"
-        value={value}
-        onChange={handleChange}
-        sx={{ display: "flex", flexFlow: "row", fontSize: "17px" }}
-      >
-        <FormControlLabel
-          value="female"
-          control={<Radio />}
-          label="По возрастанию"
-          sx={{ "& .MuiTypography-root": { fontSize: "16px" } }}
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <TextField
+          label="Начальная дата"
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          sx={{ width: "100%" }}
         />
-        <FormControlLabel
-          value="male"
-          control={<Radio />}
-          label="По убыванию"
-          sx={{ "& .MuiTypography-root": { fontSize: "16px" } }}
+        <TextField
+          label="Конечная дата"
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          sx={{ width: "100%" }}
         />
-      </RadioGroup>
+        <Button
+          variant="contained"
+          onClick={handleApplyFilter}
+          sx={{ alignSelf: "flex-start", marginTop: "16px" }}
+        >
+          Применить
+        </Button>
+      </div>
     </FormControl>
   );
 }

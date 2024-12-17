@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField } from "@mui/material";
 import { useProduct } from "../context/ProductContextProvider";
 import HeroPages from "../components/HeroPages";
@@ -19,6 +19,46 @@ const AddModels = ({ animat }) => {
   const [color, setColor] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null); // Изменено: изображение будет файлом, а не строкой
+  const [users, setUsers] = useState([]); // State to store users
+  const [bookings, setBookings] = useState([]); // State to store bookings
+
+  // Fetch users from the API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/users");
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data); // Assuming the response is an array of users
+        } else {
+          console.error("Failed to fetch users");
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // Fetch bookings from the API
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/bookings");
+        if (response.ok) {
+          const data = await response.json();
+          setBookings(data); // Assuming the response is an array of bookings
+        } else {
+          console.error("Failed to fetch bookings");
+        }
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    };
+
+    fetchBookings();
+  }, []);
 
   // Обработчик загрузки изображения
   const handleImageChange = (event) => {
@@ -68,6 +108,60 @@ const AddModels = ({ animat }) => {
   return (
     <div>
       <HeroPages name="Админ панель" />
+      <div style={{ width: "90%", margin: "auto", textAlign: "center" }}>
+        <p style={{ fontSize: "24px", fontWeight: "bold", color: "black" }}>
+          Список пользователей
+        </p>
+
+        <table className="styled-table">
+          <thead>
+            <tr>
+              <th>Имя</th>
+              <th>Email</th>
+              <th>Телефон</th>
+              <th>Лиценция водителя</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user, index) => (
+              <tr key={index}>
+                <td>{user.username}</td>
+                <td>{user.email}</td>
+                <td>{user.phone}</td>
+                <td>{user.driverLicense}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <p style={{ fontSize: "24px", fontWeight: "bold", color: "black" }}>
+          Список бронирований
+        </p>
+
+        <table className="styled-table">
+          <thead>
+            <tr>
+              <th>Имя пользователя</th>
+              <th>Начало бронирования</th>
+              <th>Конец бронирования</th>
+              <th>Машина</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bookings.map((booking, index) => (
+              <tr key={booking.id}>
+                <td>{booking.user.username}</td>
+                <td>{new Date(booking.startDate).toLocaleDateString()}</td>
+                <td>{new Date(booking.endDate).toLocaleDateString()}</td>
+                <td>{booking.car.make}</td>
+                <td>{booking.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       <div className="add_product" id={animat ? "product" : "p"}>
         <h2>Создать продукт</h2>
         <TextField
@@ -153,6 +247,7 @@ const AddModels = ({ animat }) => {
           Create Product
         </button>
       </div>
+
       <div className="book-banner">
         <div className="book-banner__overlay"></div>
         <div className="container">

@@ -96,8 +96,8 @@ function Models() {
               onChange={(e) => setSearchQuery(e.target.value)} // Обработчик ввода
             />
           </div>
-          <ControlledRadioButtonsGroup />
-          <div>
+          {/* <ControlledRadioButtonsGroup /> */}
+          <div style={{ marginLeft: "38px" }}>
             <Autocomplete
               options={options.sort(
                 (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
@@ -123,7 +123,7 @@ function Models() {
               <div
                 className="models-div__card"
                 key={car.id}
-                style={{ width: "30%" }}
+                style={{ width: "32%" }}
               >
                 <div className="models-div__card__img">
                   <img

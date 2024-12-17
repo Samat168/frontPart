@@ -32,7 +32,7 @@ const PaymentForm = () => {
 
   useEffect(() => {
     getUser();
-  }, [getUser]);
+  }, []);
 
   useEffect(() => {
     if (users?.id) {
