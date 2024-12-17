@@ -96,7 +96,7 @@ function Models() {
               onChange={(e) => setSearchQuery(e.target.value)} // Обработчик ввода
             />
           </div>
-          {/* <ControlledRadioButtonsGroup /> */}
+          <ControlledRadioButtonsGroup />
           <div style={{ marginLeft: "38px" }}>
             <Autocomplete
               options={options.sort(
