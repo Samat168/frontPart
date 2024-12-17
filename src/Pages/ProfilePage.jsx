@@ -13,6 +13,7 @@ import {
   Paper,
   Avatar,
   Input,
+  TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -24,10 +25,15 @@ function ProfilePage() {
   const [error, setError] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null); // Состояние для нового файла аватара
   const [avatar, setAvatar] = useState(users?.avatar); // Инициализация аватара
-
+  const [editMode, setEditMode] = useState(false); // Статус редактирования
+  const [newUsername, setNewUsername] = useState(users?.username || "");
+  const [newPhone, setNewPhone] = useState(users?.phone || "");
+  const [newDriverLicense, setNewDriverLicense] = useState(
+    users?.driverLicense || ""
+  );
   useEffect(() => {
     getUser();
-  }, [getUser]);
+  }, []);
 
   useEffect(() => {
     if (users?.id && bookings.length === 0) {
@@ -109,6 +115,37 @@ function ProfilePage() {
     }
   };
 
+  const handleUpdateProfile = () => {
+    const updatedData = {
+      username: newUsername,
+      phone: newPhone,
+      driverLicense: newDriverLicense,
+    };
+
+    fetch(`http://localhost:8080/users/${users.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Ошибка при обновлении профиля");
+        }
+        return response.json();
+      })
+      .then(() => {
+        alert("Данные успешно обновлены!");
+        getUser();
+        setEditMode(false);
+      })
+      .catch((error) => {
+        console.error("Ошибка при обновлении профиля:", error);
+        alert("Произошла ошибка при обновлении данных.");
+      });
+  };
+
   // Фильтрация только подтвержденных бронирований
   const confirmedBookings = bookings.filter(
     (booking) => booking.status === "CONFIRMED"
@@ -170,21 +207,71 @@ function ProfilePage() {
         </Button>
       </Box>
 
-      <Box>
-        <Typography sx={{ fontSize: "19px" }}>
-          Имя профиля: {users?.username || "Неизвестно"}
+      <Box sx={{ marginTop: "20px" }}>
+        <Typography sx={{ fontSize: "19px", textAlign: "center" }}>
+          Личные данные
         </Typography>
-        <Typography sx={{ fontSize: "19px" }}>
-          Ваш номер телефона: {users?.phone || "Неизвестно"}
-        </Typography>
-        <Typography sx={{ fontSize: "19px" }}>
-          Ваш DriverLisence: {users?.driverLicense || "Неизвестно"}
-        </Typography>
-      </Box>
 
-      <Button variant="outlined" color="secondary" onClick={handleLogout}>
-        Выйти
-      </Button>
+        {editMode ? (
+          <Box>
+            <TextField
+              label="Имя"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value)}
+              sx={{ marginBottom: "10px", width: "100%" }}
+            />
+            <TextField
+              label="Телефон"
+              value={newPhone}
+              onChange={(e) => setNewPhone(e.target.value)}
+              sx={{ marginBottom: "10px", width: "100%" }}
+            />
+            <TextField
+              label="Водительское удостоверение"
+              value={newDriverLicense}
+              onChange={(e) => setNewDriverLicense(e.target.value)}
+              sx={{ marginBottom: "20px", width: "100%" }}
+            />
+            <Box
+              sx={{ display: "flex", justifyContent: "center", gap: "10px" }}
+            >
+              <Button variant="contained" onClick={handleUpdateProfile}>
+                Сохранить изменения
+              </Button>
+              <Button variant="outlined" onClick={() => setEditMode(false)}>
+                Отменить
+              </Button>
+            </Box>
+          </Box>
+        ) : (
+          <Box>
+            <Typography sx={{ fontSize: "19px" }}>
+              Имя профиля: {users?.username || "Неизвестно"}
+            </Typography>
+            <Typography sx={{ fontSize: "19px" }}>
+              Ваш номер телефона: {users?.phone || "Неизвестно"}
+            </Typography>
+            <Typography sx={{ fontSize: "19px" }}>
+              Ваш DriverLisence: {users?.driverLicense || "Неизвестно"}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "20px",
+              }}
+            >
+              <Button
+                variant="outlined"
+                onClick={() => setEditMode(true)}
+                sx={{ marginRight: "10px" }}
+              >
+                Редактировать
+              </Button>
+            </Box>
+          </Box>
+        )}
+      </Box>
 
       {/* История бронирований */}
       <Box
