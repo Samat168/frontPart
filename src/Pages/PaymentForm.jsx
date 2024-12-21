@@ -30,6 +30,11 @@ const PaymentForm = () => {
   const [cvv, setCvv] = useState("");
   const [cardholderName, setCardholderName] = useState("");
 
+  const cardNumberRegex = /^\d{16}$/;
+  const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+  const cvvRegex = /^\d{3}$/;
+  const cardholderNameRegex = /^[A-Za-z\s]+$/;
+
   useEffect(() => {
     getUser();
   }, []);
@@ -56,12 +61,33 @@ const PaymentForm = () => {
   }, [users?.id]);
 
   const handlePaymentClick = (booking) => {
-    console.log("Selected booking:", booking); // Логируем выбранное бронирование
     setSelectedBooking(booking);
     setOpenPaymentModal(true);
   };
+
   const handlePaymentSubmit = () => {
     if (!selectedBooking) return;
+
+    // Валидация данных
+    if (!cardNumberRegex.test(cardNumber)) {
+      alert("Введите корректный номер карты (16 цифр)");
+      return;
+    }
+
+    if (!expiryDateRegex.test(expiryDate)) {
+      alert("Введите корректную дату окончания в формате MM/YY");
+      return;
+    }
+
+    if (!cvvRegex.test(cvv)) {
+      alert("Введите корректный CVV (3 цифры)");
+      return;
+    }
+
+    if (!cardholderNameRegex.test(cardholderName)) {
+      alert("Введите корректное имя держателя карты (только буквы и пробелы)");
+      return;
+    }
 
     fetch(
       `http://localhost:8080/api/bookings/confirmed/${selectedBooking.bookingId}`,
@@ -87,22 +113,28 @@ const PaymentForm = () => {
         );
       })
       .catch((err) => {
-        console.error("Ошибка при подтверждении оплаты:", err); // Логируем только ошибку
+        console.error("Ошибка при подтверждении оплаты:", err);
         alert(`Ошибка: ${err.message}`);
       });
   };
 
-  const getStatusButton = (status) => {
-    switch (status) {
-      case "CONFIRMED":
-        return <span style={{ color: "green" }}>Подтверждено</span>;
-      case "PENDING":
-        return <span style={{ color: "orange" }}>В ожидании</span>;
-      case "CANCELLED":
-        return <span style={{ color: "red" }}>Отменено</span>;
-      default:
-        return <span>Неизвестный статус</span>;
-    }
+  const handleDeleteBooking = (bookingId) => {
+    fetch(`http://localhost:8080/api/bookings/${bookingId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Не удалось удалить бронирование");
+        }
+        alert("Бронирование успешно удалено!");
+        setBookings((prevBookings) =>
+          prevBookings.filter((booking) => booking.bookingId !== bookingId)
+        );
+      })
+      .catch((err) => {
+        console.error("Ошибка при удалении бронирования:", err);
+        alert(`Ошибка: ${err.message}`);
+      });
   };
 
   if (loading) {
@@ -203,14 +235,14 @@ const PaymentForm = () => {
                   {booking.advancePayment} сом
                 </TableCell>
                 <TableCell sx={{ fontSize: "20px" }}>
-                  {getStatusButton(booking.status)}
+                  {booking.status}
                 </TableCell>
                 <TableCell>
                   <button
                     onClick={() => handlePaymentClick(booking)}
                     style={{
                       padding: "10px 20px",
-                      backgroundColor: "#fa4226",
+                      backgroundColor: "green",
                       color: "#fff",
                       border: "none",
                       borderRadius: "5px",
@@ -218,6 +250,20 @@ const PaymentForm = () => {
                     }}
                   >
                     Оплатить
+                  </button>
+                  <button
+                    onClick={() => handleDeleteBooking(booking.bookingId)}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: "#d9534f",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                      marginTop: "10px",
+                    }}
+                  >
+                    Удалить
                   </button>
                 </TableCell>
               </TableRow>
@@ -255,6 +301,12 @@ const PaymentForm = () => {
             margin="normal"
             value={cardNumber}
             onChange={(e) => setCardNumber(e.target.value)}
+            error={!cardNumberRegex.test(cardNumber) && cardNumber !== ""}
+            helperText={
+              !cardNumberRegex.test(cardNumber) && cardNumber !== ""
+                ? "Введите 16 цифр"
+                : ""
+            }
           />
           <TextField
             label="Дата окончания (MM/YY)"
@@ -262,6 +314,12 @@ const PaymentForm = () => {
             margin="normal"
             value={expiryDate}
             onChange={(e) => setExpiryDate(e.target.value)}
+            error={!expiryDateRegex.test(expiryDate) && expiryDate !== ""}
+            helperText={
+              !expiryDateRegex.test(expiryDate) && expiryDate !== ""
+                ? "Формат MM/YY"
+                : ""
+            }
           />
           <TextField
             label="CVV"
@@ -270,6 +328,10 @@ const PaymentForm = () => {
             type="password"
             value={cvv}
             onChange={(e) => setCvv(e.target.value)}
+            error={!cvvRegex.test(cvv) && cvv !== ""}
+            helperText={
+              !cvvRegex.test(cvv) && cvv !== "" ? "Введите 3 цифры" : ""
+            }
           />
           <TextField
             label="Имя держателя карты"
@@ -277,6 +339,14 @@ const PaymentForm = () => {
             margin="normal"
             value={cardholderName}
             onChange={(e) => setCardholderName(e.target.value)}
+            error={
+              !cardholderNameRegex.test(cardholderName) && cardholderName !== ""
+            }
+            helperText={
+              !cardholderNameRegex.test(cardholderName) && cardholderName !== ""
+                ? "Только буквы и пробелы"
+                : ""
+            }
           />
           <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
             <Button

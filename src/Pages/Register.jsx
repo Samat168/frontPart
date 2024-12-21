@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-// import Logo from "../images/logo/logo.png";
-// import back from "../images/logo/reg.png";
-
-// import { useNavigate, useNavigation } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,6 +8,7 @@ import {
 } from "@mui/material";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContextProvider";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -19,31 +16,56 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [driverLicense, setdriverLicense] = useState("");
-
-  // const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
   const { handleRegister, loading, error } = useAuth();
 
-  function handleSave() {
-    if (
-      !email.trim() ||
-      !password.trim() ||
-      !driverLicense.trim() ||
-      !name.trim() ||
-      !phone.trim()
-    ) {
-      alert("Заполните поля!");
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Проверка имени
+    if (!name.trim()) {
+      newErrors.name = "Введите имя.";
+    }
+
+    // Проверка номера телефона
+    if (!phone.trim() || !/^\+996\d{9}$/.test(phone)) {
+      newErrors.phone =
+        "Номер телефона должен начинаться с +996 и содержать 12 цифр.";
+    }
+
+    // Проверка email
+    if (!email.trim() || !/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
+      newErrors.email = "Введите корректный Gmail-адрес.";
+    }
+
+    // Проверка пароля
+    if (!password.trim() || password.length <= 4) {
+      newErrors.password = "Пароль должен содержать более 5 символов.";
+    }
+
+    // Проверка водительского удостоверения
+    if (!driverLicense.trim()) {
+      newErrors.driverLicense = "Введите данные водительского удостоверения.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Если ошибок нет, возвращаем true
+  };
+
+  const handleSave = () => {
+    if (!validateForm()) {
       return;
     }
 
     const formData = new FormData();
-
     formData.append("email", email);
     formData.append("username", name);
     formData.append("phone", phone);
     formData.append("password", password);
     formData.append("driverLicense", driverLicense);
     handleRegister(formData);
-  }
+  };
 
   return (
     <div
@@ -60,7 +82,6 @@ const Register = () => {
           flexDirection: "column",
           height: "470px",
           width: "320px",
-          padding: "auto",
           margin: "auto",
           boxShadow: "10px 10px 35px  #434040",
           paddingTop: "40px",
@@ -70,26 +91,9 @@ const Register = () => {
         }}
       >
         {error ? <h2>{error}</h2> : null}
-        <h2
-          style={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
+        <h2 style={{ display: "flex", justifyContent: "center" }}>
           Регистрация
         </h2>
-        <Typography
-          component="h1"
-          variant="h5"
-          sx={{
-            color: "white",
-            marginLeft: "15px",
-            marginBottom: "15px",
-            fontSize: "40px",
-          }}
-        >
-          registration
-        </Typography>
         <div
           style={{
             display: "flex",
@@ -100,65 +104,71 @@ const Register = () => {
           }}
         >
           <TextField
+            error={!!errors.name}
+            helperText={errors.name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="name"
+            placeholder="Имя"
             sx={{
               marginTop: "5px",
               backgroundColor: "white",
               borderRadius: "10px",
               width: "47%",
-
               marginInline: "auto",
             }}
           />
           <TextField
+            error={!!errors.phone}
+            helperText={errors.phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="phone"
+            placeholder="Телефон"
             sx={{
               marginTop: "5px",
               backgroundColor: "white",
               borderRadius: "10px",
               width: "47%",
-
               marginInline: "auto",
             }}
           />
         </div>
         <TextField
+          error={!!errors.email}
+          helperText={errors.email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="email"
+          placeholder="Gmail"
           sx={{
             marginTop: "5px",
             backgroundColor: "white",
             borderRadius: "10px",
             width: "300px",
-
             marginInline: "auto",
             marginBottom: "10px",
           }}
         />
         <TextField
+          error={!!errors.password}
+          helperText={errors.password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="password"
+          placeholder="Пароль"
+          type="password"
           sx={{
             marginTop: "5px",
             backgroundColor: "white",
             borderRadius: "10px",
             width: "300px",
-
             marginInline: "auto",
             marginBottom: "10px",
           }}
         />
         <TextField
+          error={!!errors.driverLicense}
+          helperText={errors.driverLicense}
           onChange={(e) => setdriverLicense(e.target.value)}
-          placeholder="driverLicense"
+          placeholder="Водительское удостоверение"
           sx={{
             marginTop: "5px",
             backgroundColor: "white",
             borderRadius: "10px",
             width: "300px",
-
             marginInline: "auto",
             marginBottom: "10px",
           }}
@@ -172,7 +182,6 @@ const Register = () => {
             onClick={handleSave}
             variant="outlined"
             sx={{
-              // backgroundColor: "white",
               width: "110px",
               margin: "auto",
               marginTop: "10px",
@@ -181,9 +190,7 @@ const Register = () => {
               backgroundColor: "grey",
             }}
           >
-            <a style={{ color: "white" }} href="https://mail.google.com/">
-              REGISTER
-            </a>
+            <a style={{ color: "white" }}>REGISTER</a>
           </Button>
         )}
       </Box>

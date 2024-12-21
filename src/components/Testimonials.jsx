@@ -6,13 +6,13 @@ function Testimonials() {
     <>
       <section
         className="testimonials-section"
-        style={{ backgroundColor: "#f8f8f8" }}
+        style={{ backgroundColor: "#dbded7" }}
       >
         <div className="container">
           <div className="testimonials-content">
             <div className="testimonials-content__title">
               <h2>Отзывы клиентов</h2>
-              <p>
+              <p style={{ color: "black" }}>
                 Узнайте, какое положительное влияние мы оказали на наших
                 клиентов, прочитав их отзывы. Наши клиенты уже оценили наши
                 услуги и результаты и с радостью поделятся с вами своим

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContextProvider";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PaymentIcon from "@mui/icons-material/Payment";
+import Logo from "../images/logo/logo10.png";
 import {
   Avatar,
   Box,
@@ -13,6 +14,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { ADMIN } from "../helpers/consts";
 // Подключаем контекст для получения currentUser
 
 function Navbar() {
@@ -35,7 +37,7 @@ function Navbar() {
 
   useEffect(() => {
     getUser();
-  }, [getUser]);
+  }, []);
 
   return (
     <>
@@ -89,43 +91,131 @@ function Navbar() {
         </div>
 
         {/* desktop */}
-        <div className="navbar">
-          <div className="navbar__img"></div>
+        <div
+          className="navbar"
+          style={{
+            backgroundColor: "black",
+            maxWidth: "140rem",
+            height: "56px",
+          }}
+        >
+          <div className="navbar__img">
+            <Link to="/" onClick={() => window.scrollTo(0, 0)}>
+              <img
+                src={Logo}
+                alt="logo-img"
+                style={{
+                  // clipPath: "inset(0 50% 0 0)", // Обрезает правую часть изображения
+                  // width: "100%", // Чтобы логотип занимал всю доступную ширину
+                  width: "130px",
+                  height: "60px",
+                }}
+              />
+            </Link>
+          </div>
+
           <ul className="navbar__links">
             <li>
-              <Link className="home-link" to="/">
+              <Link
+                className="home-link"
+                to="/"
+                style={{
+                  color: "#fff",
+                  fontSize: "18px",
+                  lineHeight: "21px",
+                  fontWeight: "400",
+                }}
+              >
                 Главная
               </Link>
             </li>
             <li>
-              <Link className="about-link" to="/about">
+              <Link
+                className="about-link"
+                to="/about"
+                style={{
+                  color: "#fff",
+                  fontSize: "18px",
+                  lineHeight: "21px",
+                  fontWeight: "400",
+                }}
+              >
                 О нас
               </Link>
             </li>
             <li>
-              <Link className="models-link" to="/models">
+              <Link
+                className="models-link"
+                to="/models"
+                style={{
+                  color: "#fff",
+                  fontSize: "18px",
+                  lineHeight: "21px",
+                  fontWeight: "400",
+                }}
+              >
                 Машины
               </Link>
             </li>
             <li>
-              <Link className="testi-link" to="/testimonials">
+              <Link
+                className="testi-link"
+                to="/testimonials"
+                style={{
+                  color: "#fff",
+                  fontSize: "18px",
+                  lineHeight: "21px",
+                  fontWeight: "400",
+                }}
+              >
                 Отзывы
               </Link>
             </li>
             <li>
-              <Link className="contact-link" to="/contact">
+              <Link
+                className="contact-link"
+                to="/contact"
+                style={{
+                  color: "#fff",
+                  fontSize: "18px",
+                  lineHeight: "21px",
+                  fontWeight: "400",
+                }}
+              >
                 Контакты
               </Link>
             </li>
             <li>
-              <Link className="contact-link" to="/admin">
-                Админ Панель
-              </Link>
+              {currentUser && currentUser === ADMIN && (
+                <Link
+                  className="contact-link"
+                  to="/admin"
+                  style={{
+                    color: "#fff",
+                    fontSize: "18px",
+                    lineHeight: "21px",
+                    fontWeight: "400",
+                  }}
+                >
+                  Админ Панель
+                </Link>
+              )}
             </li>
             <li>
-              <Link className="contact-link" to="/manager">
-                Manager
-              </Link>
+              {currentUser && currentUser === ADMIN && (
+                <Link
+                  className="contact-link"
+                  to="/manager"
+                  style={{
+                    color: "#fff",
+                    fontSize: "18px",
+                    lineHeight: "21px",
+                    fontWeight: "400",
+                  }}
+                >
+                  Manager
+                </Link>
+              )}
             </li>
           </ul>
           <Box sx={{ flexGrow: 0, display: "flex" }}>
@@ -165,7 +255,10 @@ function Navbar() {
                       <Typography
                         textAlign="center"
                         sx={{
-                          fontSize: "16px",
+                          color: "black",
+                          fontSize: "18px",
+                          lineHeight: "21px",
+                          fontWeight: "400",
                         }}
                       >
                         Профиль
@@ -181,7 +274,10 @@ function Navbar() {
                     <Typography
                       textAlign="center"
                       sx={{
-                        fontSize: "16px",
+                        color: "black",
+                        fontSize: "18px",
+                        lineHeight: "21px",
+                        fontWeight: "400",
                       }}
                     >
                       Выйти
@@ -192,19 +288,44 @@ function Navbar() {
             ) : (
               <Box
                 sx={{
+                  width: "100%",
                   fontSize: "15px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "10px",
                 }}
               >
                 <Link
                   className="navbar__buttons__sign-in"
                   to="/login"
-                  sx={{
-                    margin: "20px",
+                  style={{
+                    color: "#fff",
+                    textDecoration: "none",
+                    cursor: "pointer",
+
+                    fontSize: "18px",
+                    lineHeight: "21px",
+                    fontWeight: "400",
                   }}
                 >
                   Войти
                 </Link>
-                <Link className="navbar__buttons__register" to="/register">
+                <Link
+                  className="navbar__buttons__register"
+                  to="/register"
+                  style={{
+                    color: "black",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                    backgroundColor: "#fff",
+                    borderRadius: "15px",
+                    fontSize: "18px",
+                    lineHeight: "21px",
+                    fontWeight: "400",
+                    boxShadow: "none",
+                  }}
+                >
                   Регистрация
                 </Link>
               </Box>

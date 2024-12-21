@@ -80,6 +80,52 @@ function Contact() {
                 <i className="fa-solid fa-location-dot"></i>&nbsp; Кыргызстан,
                 Бишкек
               </a>
+              <div
+                style={{
+                  width: "70%",
+                  display: "flex",
+                  justifyContent: "space-around",
+                }}
+              >
+                <a
+                  href="https://t.me/yourusername"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telegram_2019_Logo.svg/1200px-Telegram_2019_Logo.svg.png"
+                    alt="Telegram"
+                    width={60}
+                    height={60}
+                  />
+                </a>
+
+                <a
+                  href="https://www.instagram.com/jostar155/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Instagram_logo_2022.svg/640px-Instagram_logo_2022.svg.png"
+                    alt="Instagram"
+                    width={60}
+                    height={60}
+                  />
+                </a>
+
+                <a
+                  href="https://web.whatsapp.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/800px-WhatsApp.svg.png"
+                    alt="WhatsApp"
+                    width={67}
+                    height={60}
+                  />
+                </a>
+              </div>
             </div>
             <div className="contact-div__form">
               <form onSubmit={sendMessage}>
