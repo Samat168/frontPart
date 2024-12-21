@@ -5,13 +5,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import ControlledRadioButtonsGroup from "../components/ControlledRadioButtonsGroup";
 import "../styles/AdminStyles/ModelStyle.css"; // Исправьте путь и расширение
+import { useAuth } from "../context/AuthContextProvider";
+import { ADMIN } from "../helpers/consts";
 
 function Models() {
   const [cars, setCars] = useState([]); // Состояние для хранения списка машин
   const [loading, setLoading] = useState(true); // Состояние загрузки
   const [error, setError] = useState(null); // Состояние для ошибок
   const [searchQuery, setSearchQuery] = useState(""); // Состояние для текста поиска
+  const [filteredCars, setFilteredCars] = useState([]); // Состояние для отфильтрованных машин
+  const [selectedType, setSelectedType] = useState(""); // Состояние для типа машины
   const navigate = useNavigate();
+  const { currentUser, getUser, users } = useAuth();
   // GET-запрос к серверу
   useEffect(() => {
     fetch("http://localhost:8080/cars")
@@ -23,12 +28,17 @@ function Models() {
       })
       .then((data) => {
         setCars(data);
+        setFilteredCars(data); // При загрузке данных сразу показываем все машины
         setLoading(false);
       })
       .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
+  }, []);
+
+  useEffect(() => {
+    getUser();
   }, []);
 
   const handleDelete = (id) => {
@@ -54,10 +64,41 @@ function Models() {
     navigate(`/edit-car/${id}`);
   };
 
-  // Фильтрация машин по введённому названию
-  const filteredCars = cars.filter((car) =>
-    car.make.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Обработчик ввода
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    filterCars(); // Фильтруем машины после изменения поискового запроса
+  };
+
+  // Функция фильтрации
+  const filterCars = () => {
+    let filtered = cars;
+
+    // Фильтрация по названию
+    if (searchQuery) {
+      filtered = filtered.filter((car) =>
+        car.make.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Фильтрация по типу
+    if (selectedType) {
+      filtered = filtered.filter((car) => car.tip === selectedType);
+    }
+
+    setFilteredCars(filtered); // Обновляем состояние с отфильтрованными машинами
+  };
+  // Обработчик фильтрации по типу
+  const handleFilter = (filteredCars) => {
+    setFilteredCars(filteredCars);
+  };
+
+  // Сбросить фильтрацию и показать все машины
+  const handleShowAll = () => {
+    setSearchQuery(""); // Сбросить поисковый запрос
+    setSelectedType(""); // Сбросить выбранный тип машины
+    setFilteredCars(cars); // Показать все машины
+  };
 
   const options = [
     { title: "Седан", firstLetter: "С" },
@@ -87,16 +128,37 @@ function Models() {
           }}
         >
           <div style={{ width: "25%", margin: "20px", marginLeft: "50px" }}>
+            <Button
+              variant="contained"
+              onClick={handleShowAll}
+              style={{
+                width: "29%",
+                color: "white",
+                marginBottom: "20px",
+
+                borderRadius: "5px",
+                transition: "background-color 0.3s ease", // Плавная анимация для кнопки
+              }}
+              onMouseOver={(e) => (e.target.style.backgroundColor = "#ffa000")} // Оранжевый при наведении
+              onMouseOut={(e) => (e.target.style.backgroundColor = "black")} // Возврат к черному
+            >
+              Показать все машины
+            </Button>
             <h4>Поиск</h4>
             <TextField
               fullWidth
               label="Поиск по названию"
               id="fullWidth"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)} // Обработчик ввода
+              onChange={handleSearchChange} // Обработчик ввода
+              sx={{ marginBottom: "40px" }}
+              style={{
+                color: "white", // белый текст
+              }}
             />
           </div>
-          <ControlledRadioButtonsGroup />
+          <ControlledRadioButtonsGroup onFilter={handleFilter} />
+
           <div style={{ marginLeft: "38px" }}>
             <Autocomplete
               options={options.sort(
@@ -106,24 +168,45 @@ function Models() {
               getOptionLabel={(option) => option.title}
               sx={{ width: 300 }}
               renderInput={(params) => (
-                <TextField {...params} label="По типу машины" />
+                <TextField
+                  {...params}
+                  label="По типу машины"
+                  style={{ color: "white" }}
+                />
               )}
               renderGroup={(params) => (
                 <li key={params.key}>
-                  <div style={{ fontWeight: "bold" }}>{params.group}</div>
+                  <div style={{ fontWeight: "bold", color: "white" }}>
+                    {params.group}
+                  </div>
                   {params.children}
                 </li>
               )}
+              onChange={(event, newValue) =>
+                setSelectedType(newValue?.title || "")
+              } // Обновить тип
             />
           </div>
         </div>
+
         <div className="container">
           <div className="models-div" style={{ width: "100%" }}>
             {filteredCars.map((car) => (
               <div
                 className="models-div__card"
                 key={car.id}
-                style={{ width: "32%" }}
+                style={{
+                  width: "32%",
+                  borderRadius: "6%",
+                  border: "1px solid grey",
+                  transition: "transform 0.3s ease", // Плавная анимация для карточки
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.05)")
+                } // Увеличение при наведении
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                } // Возврат к нормальному размеру
               >
                 <div className="models-div__card__img">
                   <img
@@ -153,62 +236,70 @@ function Models() {
                     to={`/car/${car.id}`}
                     className="models-div__card__btn"
                     onClick={() => window.scrollTo(0, 0)}
+                    style={{
+                      backgroundColor: "black", // черный фон
+                      color: "white", // белый текст
+                      padding: "10px",
+                      borderRadius: "20px",
+                      transition: "background-color 0.3s ease", // Плавная анимация для кнопки
+                    }}
+                    onMouseOver={(e) =>
+                      (e.target.style.backgroundColor = "rgb(63 169 227)")
+                    } // Оранжевый при наведении
+                    onMouseOut={(e) =>
+                      (e.target.style.backgroundColor = "black")
+                    } // Возврат к черному
                   >
                     Забронировать поездку
                   </Link>
                 </div>
-                <div
-                  style={{
-                    display: "flex",
-
-                    alignItems: "center",
-                    margin: "20px",
-                    justifyContent: "space-around",
-                  }}
-                >
-                  <Button
-                    onClick={() => handleDelete(car.id)}
+                {currentUser && currentUser === ADMIN && (
+                  <div
                     style={{
-                      backgroundColor: "#f44336",
-                      color: "white",
-                      padding: "8px 15px",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                      transition: "background-color 0.3s ease",
-                      width: "40%",
+                      display: "flex",
+                      alignItems: "center",
+                      margin: "20px",
+                      justifyContent: "space-around",
                     }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#d32f2f")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#f44336")
-                    }
                   >
-                    Удалить
-                  </Button>
-                  <Button
-                    onClick={() => handleEdit(car.id)}
-                    style={{
-                      backgroundColor: "#ffa000",
-                      color: "white",
-                      padding: "8px 15px",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                      transition: "background-color 0.3s ease",
-                      width: "40%",
-                    }}
-                    onMouseOver={(e) =>
-                      (e.target.style.backgroundColor = "#f57c00")
-                    }
-                    onMouseOut={(e) =>
-                      (e.target.style.backgroundColor = "#ffa000")
-                    }
-                  >
-                    Изменить
-                  </Button>
-                </div>
+                    <Button
+                      onClick={() => handleDelete(car.id)}
+                      style={{
+                        backgroundColor: "#f44336",
+                        color: "white",
+                        padding: "8px 15px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        transition: "background-color 0.3s ease",
+                        width: "40%",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.target.style.backgroundColor = "#d32f2f")
+                      }
+                      onMouseOut={(e) =>
+                        (e.target.style.backgroundColor = "#f44336")
+                      }
+                    >
+                      Удалить
+                    </Button>
+                    <Button
+                      onClick={() => handleEdit(car.id)}
+                      style={{
+                        backgroundColor: "rgb(63 169 227)",
+                        color: "white",
+                        padding: "8px 15px",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        transition: "background-color 0.3s ease",
+                        width: "40%",
+                      }}
+                    >
+                      Изменить
+                    </Button>
+                  </div>
+                )}
               </div>
             ))}
           </div>

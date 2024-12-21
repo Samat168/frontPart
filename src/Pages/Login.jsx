@@ -13,25 +13,42 @@ import { useAuth } from "../context/AuthContextProvider";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { handleLogin, loading, error } = useAuth();
 
+  // Валидация формы
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Проверка на пустой email
+    if (!email.trim()) {
+      newErrors.email = "Введите email.";
+    } else if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
+      newErrors.email = "Введите корректный email.";
+    }
+
+    // Проверка на пустой пароль
+    if (!password.trim()) {
+      newErrors.password = "Введите пароль.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSave = () => {
-    if (!email.trim() || !password.trim()) {
-      alert("Заполните поля!");
+    if (!validateForm()) {
       return;
     }
-    const formData = {
-      email,
-      password,
-    };
-
+    const formData = { email, password };
     handleLogin(formData, email);
   };
 
   return (
-    <div style={{}}>
+    <div>
       <Box
         sx={{
           width: "100%",
@@ -71,7 +88,10 @@ const Login = () => {
             label="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            error={!!errors.email}
+            helperText={errors.email}
             sx={{ marginBottom: "15px", width: "100%" }}
+            placeholder="Введите ваш email"
           />
 
           <TextField
@@ -79,7 +99,10 @@ const Login = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password}
             sx={{ marginBottom: "20px", width: "100%" }}
+            placeholder="Введите ваш пароль"
           />
 
           {loading ? (

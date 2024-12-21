@@ -48,6 +48,7 @@ const AuthContextProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
+      window.location.href = "https://mail.google.com/";
     } catch (error) {
       console.log(error);
     } finally {
